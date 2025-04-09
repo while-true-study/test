@@ -3,6 +3,7 @@ import Header from "./components/Header";
 import TabMenu from "./components/TabMenu/TabMenu";
 import SoloReels from "./components/SoloReels/SoloReels";
 import MultiReels from "./components/multiReels/MultiReels";
+import ReserveReels from "./components/reserveReels/ReserveReels";
 
 function App() {
   const [selected, setSelected] = useState<number>(0);
@@ -13,7 +14,7 @@ function App() {
       case 1:
         return <MultiReels />;
       case 2:
-        return <p>3번째임</p>;
+        return <ReserveReels />;
       default:
         return null;
     }

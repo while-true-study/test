@@ -3,16 +3,26 @@ import styles from "./SoloReels.module.css";
 import VideoDropzone from "../VideoDropzone/VideoDropzone";
 import { useAccountStore } from "../../stores/acccountStore";
 import axios from "axios";
+import { ClipLoader } from "react-spinners";
 
 const SoloReels = () => {
   const [caption, setCaption] = useState<string>(""); // 캡션
   const [videoFile, setVideoFile] = useState<File | null>(null); // 영상 파일
   const [time, setTime] = useState<string>(""); // 날짜
   const [date, setDate] = useState<string>(""); // 시간
+  const [loading, setLoading] = useState<boolean>(true);
+
+  const initData = () => {
+    setDate("");
+    setTime("");
+    setVideoFile(null);
+    setCaption("");
+  };
 
   const selectedAccount = useAccountStore((state) => state.selectedAccount);
 
   const boradButtonClick = async () => {
+    setLoading(true);
     const combinedDateTime = new Date(`${date}T${time}:00`);
     const datetimeString = combinedDateTime.toISOString();
 
@@ -25,10 +35,7 @@ const SoloReels = () => {
     if (!selectedAccount) {
       return;
     }
-    formData.append(
-      "instagram_account_id",
-      selectedAccount.ig_user_id.toString()
-    );
+    formData.append("instagram_account_id", selectedAccount.id.toString());
 
     formData.forEach((value, key) => {
       console.log(`${key}:`, value);
@@ -51,6 +58,9 @@ const SoloReels = () => {
         });
     } catch (err) {
       console.log("실패", err);
+    } finally {
+      setLoading(false);
+      initData();
     }
   };
 
@@ -92,9 +102,29 @@ const SoloReels = () => {
             ></input>
           </div>
         </div>
-        <button className={styles.reelsbutton} onClick={boradButtonClick}>
-          릴스 예약하기
+        <button
+          className={styles.reelsbutton}
+          onClick={boradButtonClick}
+          disabled={loading}
+        >
+          {loading ? "업로드 중..." : "릴스 예약하기"}
         </button>
+        {loading && (
+          <div
+            style={{
+              position: "fixed",
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
+              zIndex: 9999,
+              display: "flex",
+              justifyContent: "center",
+              marginTop: "15px",
+            }}
+          >
+            <ClipLoader size={35} color="#666" />
+          </div>
+        )}
       </div>
     </div>
   );

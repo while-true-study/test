@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import styles from "./Header.module.css";
 import axios from "axios";
 import { useAccountStore } from "../stores/acccountStore";
+import AddAccount from "./addAccount/AddAccount";
 
 interface InstagramAccount {
   id: number;
@@ -10,17 +11,18 @@ interface InstagramAccount {
 }
 
 const Header = () => {
+  const [createAcView, setCreateAcView] = useState<boolean>(false);
   const [accounts, setAccounts] = useState<InstagramAccount[]>([]);
   const setSelectedAccount = useAccountStore(
     (state) => state.setSelectedAccount
   );
 
   const account = () => {
-    console.log("계정 관리 버튼 클릭");
+    console.log("asd");
   };
 
   const addAccount = () => {
-    console.log("계정 추가 버튼 클릭");
+    setCreateAcView(!createAcView);
   };
 
   useEffect(() => {
@@ -64,6 +66,7 @@ const Header = () => {
 
   return (
     <div className={styles.wrapper}>
+      {createAcView ? <AddAccount addAccount={addAccount}></AddAccount> : ""}
       <span className={styles.title}>인스타그램 릴스 자동등록</span>
       <div className={styles.content}>
         <div style={{ flexGrow: "1" }}>

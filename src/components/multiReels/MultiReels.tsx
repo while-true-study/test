@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import styles from "./MultiReels.module.css";
 import VideoDropzone from "../VideoDropzone/VideoDropzone";
+import axios from "axios";
+import { useAccountStore } from "../../stores/acccountStore";
 
 type ReelItem = {
   id: number;
@@ -11,9 +13,49 @@ type ReelItem = {
 };
 
 const MultiReels = () => {
-  const [reels, setReels] = useState<ReelItem[]>([
-    { id: 1, file: null, caption: "", date: "", time: "" },
-  ]);
+  const selectedAccount = useAccountStore((state) => state.selectedAccount);
+  const [reels, setReels] = useState<ReelItem[]>([]);
+
+  const boradButtonClick = async () => {
+    for (let i = 0; i < reels.length; i++) {
+      const combinedDateTime = new Date(`${reels[i].date}T${reels[i].time}:00`);
+      const datetimeString = combinedDateTime.toISOString();
+
+      const formData = new FormData();
+      if (reels[i].file) {
+        formData.append("video", reels[i].file!);
+      }
+      formData.append("caption", reels[i].caption);
+      formData.append("scheduled_at", datetimeString);
+      if (!selectedAccount) {
+        return;
+      }
+      formData.append("instagram_account_id", selectedAccount.id.toString());
+
+      formData.forEach((value, key) => {
+        console.log(`${key}:`, value);
+      });
+
+      try {
+        await axios
+          .post(
+            "https://neat-eel-comic.ngrok-free.app/api/v1/reels_scheduler/create",
+            formData,
+            {
+              headers: {
+                "Content-Type": "multipart/form-data",
+                "ngrok-skip-browser-warning": "69420",
+              },
+            }
+          )
+          .then((res) => {
+            console.log(res.data);
+          });
+      } catch (err) {
+        console.log("실패", err);
+      }
+    }
+  };
 
   const handleChange = (id: number, field: keyof ReelItem, value: any) => {
     setReels((prev) =>
@@ -115,12 +157,12 @@ const MultiReels = () => {
 
       <div className={styles.center}>
         <button onClick={addReel} className={styles.addBtn}>
-          +
+          <span>+</span>
         </button>
       </div>
 
       <div className={styles.buttonBox}>
-        <button className={styles.reelsbutton} onClick={reelsClick}>
+        <button className={styles.reelsbutton} onClick={boradButtonClick}>
           예약하기
         </button>
       </div>
