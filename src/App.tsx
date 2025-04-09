@@ -20,7 +20,7 @@ function App() {
     }
   };
   return (
-    <div className="min-h-screen bg-gray-100 p-6">
+    <div className="min-h-screen bg-gray-100 p-6 min-w-[800px]">
       <div className="max-w-4xl m-auto">
         <Header></Header>
         <TabMenu selected={selected} onChange={setSelected} />

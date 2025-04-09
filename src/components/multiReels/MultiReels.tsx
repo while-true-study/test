@@ -3,6 +3,7 @@ import styles from "./MultiReels.module.css";
 import VideoDropzone from "../VideoDropzone/VideoDropzone";
 import axios from "axios";
 import { useAccountStore } from "../../stores/acccountStore";
+import MultiVideoDrop from "../MultiVideoDrop/MultiVideoDrop";
 
 type ReelItem = {
   id: number;
@@ -10,11 +11,25 @@ type ReelItem = {
   caption: string;
   date: string;
   time: string;
+  videoUrl?: string;
 };
 
 const MultiReels = () => {
   const selectedAccount = useAccountStore((state) => state.selectedAccount);
   const [reels, setReels] = useState<ReelItem[]>([]);
+
+  const handleFileDrop = (files: File[]) => {
+    const newReels = files.map((file, index) => ({
+      id: reels.length + index + 1,
+      file: file,
+      caption: "",
+      date: "",
+      time: "",
+      videoUrl: URL.createObjectURL(file), // 비디오 미리보기 URL 생성
+    }));
+
+    setReels((prev) => [...prev, ...newReels]);
+  };
 
   const boradButtonClick = async () => {
     for (let i = 0; i < reels.length; i++) {
@@ -75,34 +90,33 @@ const MultiReels = () => {
     setReels(reels.filter((item) => item.id !== id));
   };
 
-  const reelsClick = () => {
-    console.log("릴스 예약하기 클릭됨!");
-    reels.forEach((reel, index) => {
-      console.log(`릴스 ${index + 1}`);
-      if (reel.file) {
-        console.log("파일 이름:", reel.file.name);
-        console.log("파일 타입:", reel.file.type);
-      } else {
-        console.log("파일 없음");
-      }
-      console.log("캡션:", reel.caption);
-      console.log("날짜:", reel.date);
-      console.log("시간:", reel.time);
-    });
-  };
-
   return (
     <div className={styles.content}>
       <div style={{ padding: "20px" }}>
-        <p className={styles.title}>일괄 업로드</p>
+      <p style={{fontSize:"20px", fontWeight:"700"}}>일괄 릴스 예약</p>
       </div>
       <hr style={{ border: "1px solid rgba(0, 0, 0, 0.2)" }}></hr>
+      <MultiVideoDrop onDrop={handleFileDrop} />
+      {/* {reels && (
+          <div style={{ marginTop: "15px" }}>
+            <video width="320" height="240" controls>
+              <source src={videoPreviewUrl} type="video/mp4" />
+            </video>
+          </div>
+        )} */}
+
+      <hr style={{ border: "1px solid rgba(0, 0, 0, 0.2)" }}></hr>
       {reels.map((item, index) => (
-        <div key={item.id} className={styles.reelBox}>
+        <div key={item.id} style={{borderBottom: "1px solid #334155"}}>
+          <div style={{ marginTop: "15px" }}>
+            <video width="200" height="200" controls style={{marginLeft:"10%"}}>
+              <source src={item.videoUrl} type="video/mp4" />
+            </video>
+          </div>
+          <div className={styles.reelBox}>
           <div className={styles.rowHeader}>
             <span className={styles.number}>{index + 1}</span>
           </div>
-
           <div className={styles.reelsContent}>
             <div className={styles.uploadText}>
               <label
@@ -152,6 +166,8 @@ const MultiReels = () => {
           >
             삭제
           </button>
+          </div>
+          
         </div>
       ))}
 

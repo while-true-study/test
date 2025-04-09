@@ -9,6 +9,7 @@ type VideoDropzoneProps = {
 const VideoDropzone = ({ onChange }: VideoDropzoneProps) => {
   const [file, setFile] = useState<File | null>(null);
   const [dragActive, setDragActive] = useState(false);
+  
 
   const handleFileSelect = (selectedFile: File | null) => {
     setFile(selectedFile);

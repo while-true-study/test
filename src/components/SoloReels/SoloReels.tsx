@@ -10,16 +10,30 @@ const SoloReels = () => {
   const [videoFile, setVideoFile] = useState<File | null>(null); // 영상 파일
   const [time, setTime] = useState<string>(""); // 날짜
   const [date, setDate] = useState<string>(""); // 시간
-  const [loading, setLoading] = useState<boolean>(true);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [videoPreviewUrl, setVideoPreviewUrl] = useState<string | undefined>(undefined); // 미리보기 URL
+
 
   const initData = () => {
     setDate("");
     setTime("");
     setVideoFile(null);
     setCaption("");
+    setVideoPreviewUrl(undefined); // 미리보기 초기화
   };
 
   const selectedAccount = useAccountStore((state) => state.selectedAccount);
+
+  const handleVideoChange = (file: File | null) => {
+    if (file) {
+      setVideoFile(file);
+  
+      // File 객체를 Blob URL로 변환
+      const videoUrl = URL.createObjectURL(file);
+      setVideoPreviewUrl(videoUrl); // 미리보기 URL 설정
+    }
+  };
+  
 
   const boradButtonClick = async () => {
     setLoading(true);
@@ -73,7 +87,14 @@ const SoloReels = () => {
       </div>
       <hr style={{ border: "1px solid rgba(0, 0, 0, 0.2)" }}></hr>
       <div style={{ padding: "20px" }}>
-        <VideoDropzone onChange={(file) => setVideoFile(file)} />
+      <VideoDropzone onChange={(file) => handleVideoChange(file)} />
+        {videoFile && (
+          <div style={{ marginTop: "15px" }}>
+            <video width="320" height="240" controls>
+              <source src={videoPreviewUrl} type="video/mp4" />
+            </video>
+          </div>
+        )}
         <div>
           <p style={{ marginTop: "10px", marginBottom: "10px" }}>캡션</p>
           <textarea
