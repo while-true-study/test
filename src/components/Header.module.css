@@ -1,0 +1,55 @@
+.title {
+  color: cornflowerblue;
+  font-size: 34px;
+  font-weight: 700;
+}
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 200px;
+  gap: 20px;
+}
+
+.content {
+  background-color: #fff;
+  width: 100%;
+  border-radius: 8px;
+  height: 80px;
+  border-radius: 20px;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.05);
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.selBox {
+  padding: 8px 8px;
+  border: 1px solid gray;
+  border-radius: 12px;
+  width: 40%;
+  margin-left: 10px;
+}
+
+.box {
+  border: 1px solid blue;
+  padding: 8px;
+  border-radius: 10px;
+}
+
+.account {
+  color: blue;
+}
+
+.addAccount {
+  background-color: blue;
+  color: #fff;
+}
+
+.accountBox {
+  display: flex;
+  gap: 8px;
+}
